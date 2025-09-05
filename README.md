@@ -1,4 +1,4 @@
-Run these commands to install:
+# Run these commands to install with conan:
 
 conan install . --build=missing
 

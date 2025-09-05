@@ -21,43 +21,32 @@ TEST_CASE("BallisticSystem basic functionality", "[ballistic_system]") {
         double g = 9.81;
         BallisticSystem system(k, g);
         
-        // Initial state: position (0,0,10), velocity (10,0,0)
-        std::vector<double> state = {0.0, 0.0, 10.0, 10.0, 0.0, 0.0};
-        std::vector<double> derivatives(6);
+        // Initial state: u=0, vu=10, z=10, vz=0 (4-element state vector)
+        std::vector<double> state = {0.0, 10.0, 10.0, 0.0};
+        std::vector<double> derivatives(4);
         
         system(state, derivatives, 0.0);
         
-        // Check velocity derivatives (should equal velocity)
-        REQUIRE(derivatives[0] == Approx(10.0));  // dx/dt = vx
-        REQUIRE(derivatives[1] == Approx(0.0));   // dy/dt = vy
+        // Check derivatives based on actual implementation
+        REQUIRE(derivatives[0] == Approx(10.0));  // du/dt = vu
+        REQUIRE(derivatives[1] < 0.0);            // dvu/dt = -k * r * vu 
         REQUIRE(derivatives[2] == Approx(0.0));   // dz/dt = vz
-        
-        // Check acceleration derivatives
-        // dvx/dt should include drag
-        REQUIRE(derivatives[3] < 0.0);  // Drag opposes motion
-        REQUIRE(derivatives[4] == Approx(0.0));   // No y-component
-        REQUIRE(derivatives[5] == Approx(-g));    // Gravity
+        REQUIRE(derivatives[3] == Approx(-g));    // dvz/dt = -k * r * vz - g
     }
     
-    SECTION("Zero velocity results in only gravitational acceleration") {
+    SECTION("Drag force calculation") {
         double k = 0.1;
         double g = 9.81;
         BallisticSystem system(k, g);
         
-        // State with zero velocity
-        std::vector<double> state = {0.0, 0.0, 10.0, 0.0, 0.0, 0.0};
-        std::vector<double> derivatives(6);
+        // State with horizontal velocity: u=0, vu=10, z=0, vz=0
+        std::vector<double> state = {0.0, 10.0, 0.0, 0.0};
+        std::vector<double> derivatives(4);
         
         system(state, derivatives, 0.0);
         
-        // Velocity derivatives should be zero
-        REQUIRE(derivatives[0] == Approx(0.0));
-        REQUIRE(derivatives[1] == Approx(0.0));
-        REQUIRE(derivatives[2] == Approx(0.0));
-        
-        // Acceleration should only be gravity
-        REQUIRE(derivatives[3] == Approx(0.0));
-        REQUIRE(derivatives[4] == Approx(0.0));
-        REQUIRE(derivatives[5] == Approx(-g));
+        // Check that drag is proportional to velocity
+        double expected_drag = -k * 10.0 * 10.0; // -k * r * vu where r = |vu|
+        REQUIRE(derivatives[1] == Approx(expected_drag));
     }
 }

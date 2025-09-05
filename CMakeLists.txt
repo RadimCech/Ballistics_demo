@@ -4,7 +4,7 @@ project(ballistics)
 
 set(CMAKE_CXX_STANDARD 23)
 
-find_package(Boost REQUIRED)
+find_package(Boost REQUIRED COMPONENTS system)
 find_package(EnTT REQUIRED)
 find_package(Catch2 REQUIRED)
 
@@ -22,7 +22,6 @@ set(SOURCES
     src/ecs/ShootingAngleSystem.cpp
 )
 
-# Main executable
 add_executable(ballistics ${SOURCES})
 
 target_link_libraries(ballistics 
@@ -30,9 +29,7 @@ target_link_libraries(ballistics
     EnTT::EnTT
 )
 
-# Test executable
 set(TEST_SOURCES
-    tests/test_main.cpp
     tests/test_ballistic_system.cpp
     tests/test_trajectory_collector.cpp
     tests/test_ecs_manager.cpp
@@ -48,11 +45,10 @@ set(TEST_SOURCES
 add_executable(ballistics_tests ${TEST_SOURCES})
 
 target_link_libraries(ballistics_tests 
-    ${Boost_LIBRARIES}
+    Boost::system
     EnTT::EnTT
     Catch2::Catch2WithMain
 )
 
-# Enable testing
 enable_testing()
 add_test(NAME ballistics_unit_tests COMMAND ballistics_tests)
