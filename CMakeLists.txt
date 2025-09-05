@@ -1,26 +1,29 @@
 
 cmake_minimum_required(VERSION 3.15)
-project(Ballistics CXX)
+project(ballistics)
 
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_STANDARD 23)
 
-# Find Boost components provided by Conan
-# Only request compiled components here.
-# odeint is header-only and will be available via Boost::headers.
-find_package(Boost REQUIRED COMPONENTS math)
+find_package(Boost REQUIRED)
+find_package(EnTT REQUIRED)
 
-# Add the include directory for your headers
 include_directories(include)
+include_directories(include/ballistic_ode)
+include_directories(include/ecs)
 
-# Define the executable and its source files
-add_executable(ballistics
+set(SOURCES
     src/main.cpp
-    src/BallisticSystem.cpp
-    src/BallisticUtils.cpp
     src/MathUtils.cpp
-    src/TrajectoryCollector.cpp
+    src/ballistic_ode/BallisticSystem.cpp
+    src/ballistic_ode/BallisticUtils.cpp
+    src/ballistic_ode/TrajectoryCollector.cpp
+    src/ecs/ECSManager.cpp
+    src/ecs/ShootingAngleSystem.cpp
 )
 
-# Link against the compiled math library and the header-only targets
-target_link_libraries(ballistics PRIVATE Boost::math Boost::headers)
+add_executable(ballistics ${SOURCES})
+
+target_link_libraries(ballistics 
+    ${Boost_LIBRARIES}
+    EnTT::EnTT
+)

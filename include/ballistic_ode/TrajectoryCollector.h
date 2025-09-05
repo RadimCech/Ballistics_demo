@@ -1,7 +1,7 @@
 #pragma once
-#include <vector>
-#include "BallisticSystem.h"
+#include "ballistic_ode/BallisticSystem.h"
 
+//functor used to map the shooting angle to the difference in height from the target
 class TrajectoryCollector {
 public:
     TrajectoryCollector(double targetU, double& z_out);

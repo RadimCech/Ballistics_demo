@@ -5,7 +5,7 @@
 // State vector: (u, vu, z, vz)
 typedef std::vector<double> state_type;
 
-// define the corresponding 1st order system as a functor
+// define the corresponding 1st order system as a functor for boost-odeint
 class BallisticSystem {
 public:
     BallisticSystem(double k, double g = Constants::GRAVITY);

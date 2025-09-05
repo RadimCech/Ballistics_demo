@@ -1,6 +1,5 @@
-#include "TrajectoryCollector.h"
-#include "BallisticSystem.h"
-#include <cmath>
+#include "ballistic_ode/TrajectoryCollector.h"
+#include "ballistic_ode/BallisticSystem.h"
 
 TrajectoryCollector::TrajectoryCollector(double targetU, double& z_out)
     : targetU_(targetU), z_at_target_(z_out) {

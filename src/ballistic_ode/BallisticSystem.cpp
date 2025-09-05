@@ -1,4 +1,4 @@
-#include "BallisticSystem.h"
+#include "ballistic_ode/BallisticSystem.h"
 #include <cmath>
 
 BallisticSystem::BallisticSystem(double k, double g) : k_(k), g_(g) {}
